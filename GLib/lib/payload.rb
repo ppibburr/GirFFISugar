@@ -1,6 +1,12 @@
 require File.join(File.dirname(__FILE__),"ffi.rb")
 
 module GLib
+  def self.type_init
+    Lib.g_type_init
+  end
+
+
+  
   # g_timeout_add
   # g_timeout_add_full
   # GLib::Timeout.add, GLib::Lib.g_timeout_add, is Ruby-Gtk2 compatible
@@ -18,12 +24,12 @@ module GLib
   # g_idle_add_full
   # GLib::Idle.add, GLib::Lib.g_idle_add, is Ruby-Gtk2 compatible  
   class Idle
-    def self.add int,&b
+    def self.add &b
       GLib::Lib.g_idle_add b,nil
     end
  
-    def self.add_full pl,int,&b
-      GLib::Lib.g_idle_add_full pl,b,nil,nil
+    def self.add_full int,&b
+      GLib::Lib.g_idle_add_full int,b,nil,nil
     end
   end
   
@@ -49,8 +55,9 @@ module GLib
     
     alias :size :length
     
+    # returns GLib::List#
     def << value
-      append value
+      append(value)
     end
   end  
 end

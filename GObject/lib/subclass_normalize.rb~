@@ -103,7 +103,6 @@ module GObject
       super()
     end
     
-    # get the gtype of the farthest ancestpr implementing Quux
     def self.get_gtype cls
       r = cls.ancestors.find_all do |a|
 	a.ancestors.index(GObject::Quux)
