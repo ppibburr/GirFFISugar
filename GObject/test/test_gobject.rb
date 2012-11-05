@@ -3,20 +3,9 @@ GirFFI.setup(:Gtk,'2.0')
 require File.join(File.expand_path(File.dirname(__FILE__)),"..","gobject.rb")
 require File.join(File.expand_path(File.dirname(__FILE__)),"..","..","GLib","glib.rb")
 require File.join(File.expand_path(File.dirname(__FILE__)),"..","..","Gtk","gtk.rb")
+
 Gtk.init []
 
-module GObject
-  load_class :Object
-  class Object
-    def self.overide q,&b
-      a = ancestors.find_all do |a|
-	a.instance_methods.index(q)
-      end.last
-      a._setup_instance_method(q.to_s)
-      define_method(q,&b) if b
-    end    
-  end
-end
 
 # Should be able to declare subclass
 # normally, and modifiy initialize
@@ -31,7 +20,7 @@ class F < Gtk::VBox
   # and be able to use super
   overide :add do
     super Gtk::Button.new
-  end
+  end  
 end
 
 # Subclass subclasses
