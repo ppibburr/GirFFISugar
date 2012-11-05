@@ -15,6 +15,7 @@ module Gtk
     
     # Ruby-Gtk2 compatibility
     alias :each :foreach
+    p self.instance_methods.sort
     def forall &b
       Gtk::Lib.gtk_container_forall(self,(Proc.new do |child|
         yield GirFFI::ArgHelper.object_pointer_to_object(FFI::Pointer.new(child))                                    

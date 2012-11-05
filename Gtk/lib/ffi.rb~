@@ -1,0 +1,4 @@
+module Gtk::Lib
+  callback :GtkCallback,[:pointer,:pointer],:void
+  attatch_function :gtk_container_forall,[:pointer,:GtkCallback],:void
+end

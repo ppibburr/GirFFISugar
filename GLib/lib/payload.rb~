@@ -29,16 +29,13 @@ module GLib
   
   load_class :List
   # GLib::List
-  # NOTE: stores elements as List's
+  # NOTE: stores elements as GList's
   #       Elements refer to gpointer's
-  #       item = GLib.g_list_nth_data(list,index) # will return FFI::Pointer
-  #       GirFFI::ArgHelper.object_pointer_to_object(item) # will convert it to GObject (will upcast), if it is a GObject (or subclass)
-  #
-  #       item = aList.max(or from anywhere in Enumerable's mixin's) will be an Integer
-  #       item = FFI::Pointer.new(item) # cast like above,
+  #       item = GLib.g_list_nth_data(list,index) # will return gpointer, Integer
+  #       GirFFI::ArgHelper.object_pointer_to_object(FFI::Pointer.new(item)) # will convert it to GObject (will upcast), if it is a GObject (or subclass)
   class List
     # i, Integer, index in list
-    # returns FFI::Pointer of value at index
+    # returns Integer, gpointer of value at index
     def nth_data i
       pt = GLib::Lib.g_list_nth_data self,i
     end
