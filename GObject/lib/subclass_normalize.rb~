@@ -60,7 +60,7 @@ module GObject
     # if enabled, removes the explicit need to call subclass! in a class definition
     def self.inherited cls
       result = super
-      
+      cls.setup_methods!
       return result unless GObject::Object.enable_auto_subclass_normalize
       sn= cls.gir_info.safe_name
       ns= cls.gir_info.namespace
@@ -81,10 +81,45 @@ module GObject
       def self.gtype
         superclass 
       end
-      
+          
       include GObject::Quux
     end
+    
+    def self.gir_methods cls
+      store = {}
+      cls.ancestors.find_all do |a|
+	a.ancestors.index(GObject::Object)
+      end.each do |a|
+	a.class_eval do
+	  @setup ||= []
+	end
+	store[a] = a.instance_methods - a.superclass.instance_methods
+      end
+      {cls=>store[cls]}
+    end
+
+    def self.setup_methods store
+      store.each_pair do |k,v|
+	k.class_eval do
+	  v.each do |m|
+	    ary = k.instance_variable_get(:@setup) 
+	    p [m,k]  if m == :get_children and ary.index(m)
+	    next if ary.index(m)
+	    
+	    ary << m
+	    _setup_instance_method(m.to_s)
+	  end
+	end
+      end
+    end
+    
+    def self.setup_methods!
+      setup_methods(gir_methods(self))
+    end
+    setup_methods! 
   end
+  
+  
   
   # Module to enable normal subclassing
   module Quux
@@ -103,6 +138,7 @@ module GObject
       super()
     end
     
+    # get the gtype of the farthest ancestpr implementing Quux
     def self.get_gtype cls
       r = cls.ancestors.find_all do |a|
 	a.ancestors.index(GObject::Quux)

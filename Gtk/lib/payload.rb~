@@ -5,14 +5,15 @@ require File.join(File.dirname(__FILE__),"ffi.rb")
 module Gtk
   load_class :Container
   class Gtk::Container
-    _setup_instance_method :get_children.to_s
+    setup_methods! # retains our overides
+   
     # ruby-gtk2 returns Array, it may be operated on, yet does not effect the list.
     # we'll do the same ...
     alias :get_children_ :get_children
     def get_children
       get_children_().map do |child|
 	# get the GObject of gpointer, child
-	GirFFI::ArgHelper.object_pointer_to_object(FFI::Pointer.new(child))
+	GObject::Object.wrap(FFI::Pointer.new(child))
       end
     end
     

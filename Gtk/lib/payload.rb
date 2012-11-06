@@ -5,7 +5,11 @@ require File.join(File.dirname(__FILE__),"ffi.rb")
 module Gtk
   load_class :Container
   class Gtk::Container
-    _setup_instance_method :get_children.to_s
+    setup_methods! if !ARGV[0] # retains our overides
+    if ARGV[0]
+     _setup_instance_method("get_children")
+     _setup_instance_method("foreach")
+    end
     # ruby-gtk2 returns Array, it may be operated on, yet does not effect the list.
     # we'll do the same ...
     alias :get_children_ :get_children

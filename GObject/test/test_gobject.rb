@@ -13,15 +13,14 @@ class F < Gtk::VBox
   def initialize
     super false,0
   end
-  
-  # need to ensure the method is setup
-  # so our redefinition will not be overidden
-  # redefine a method
-  # and be able to use super
-  overide :add do
+
+  def add
     super Gtk::Button.new
   end  
 end
+
+
+
 
 # Subclass subclasses
 class N < F;
@@ -29,8 +28,11 @@ class N < F;
     super
   end
   
-  # no need to setup a method setup in the superclass
-  # and we can redefine it, and the super chain works
+  if ARGV[0]
+    overide(:add)
+  end
+  
+  # and we can redefine it, and the super chain still works
   def add
     super
     return 77
