@@ -9,6 +9,7 @@ def assert bool,msg
 end
 
 Gtk.init []
+Gtk::VBox.new
 v = Gtk::VBox.new false,0
 v.add bb=Gtk::Button.new("foo")
 assert bb.get_label == "foo","should have label set to 'foo'"
@@ -22,7 +23,7 @@ class W < Gtk::Window
   end
 end
 ww = W.new
-
+Gtk::VBox.new
 class Q < Gtk::Window
 end
 www=Q.new("Ok!")

@@ -65,5 +65,39 @@ module Gtk
       b
     end
   end
+  
+  load_class :Label
+  class Label
+    use_constructor_overides()
+    
+    add_constructor do
+      new__
+    end
+    
+    add_constructor String do |label|
+      b = new__
+      b.set_label label
+      b
+    end
+  end  
+  
+  [:HBox,:VBox].each do |box|
+    load_class box
+    const_get(box).class_eval do
+      use_constructor_overides()
+      
+      add_constructor do
+	new__ false,0
+      end
+      
+      add_constructor FalseClass, Integer do |bool,int|
+	new__ bool,int
+      end
+      
+      add_constructor TrueClass, Integer do |bool,int|
+	new__ bool,int
+      end    
+    end
+  end
 end
-p Gtk::Button.constructors
+p Gtk::VBox.constructors
