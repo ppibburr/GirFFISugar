@@ -30,3 +30,40 @@ module Gtk
     alias :each_forall :forall
   end
 end
+
+module Gtk
+  load_class :Window
+  class Window
+    use_constructor_overides()
+    
+    add_constructor Symbol do |type|
+      new__ type
+    end
+    
+    add_constructor Integer do |type|
+      new__ type
+    end
+    
+    add_constructor String do |title|
+      w=new__(0)
+      w.set_title(title)
+      w
+    end
+  end
+  
+  load_class :Button
+  class Button
+    use_constructor_overides()
+    
+    add_constructor do
+      new__
+    end
+    
+    add_constructor String do |label|
+      b = new__
+      b.set_label label
+      b
+    end
+  end
+end
+p Gtk::Button.constructors

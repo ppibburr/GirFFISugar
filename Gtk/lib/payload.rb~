@@ -5,8 +5,11 @@ require File.join(File.dirname(__FILE__),"ffi.rb")
 module Gtk
   load_class :Container
   class Gtk::Container
-    setup_methods! # retains our overides
-   
+    setup_methods! if !ARGV[0] # retains our overides
+    if ARGV[0]
+     _setup_instance_method("get_children")
+     _setup_instance_method("foreach")
+    end
     # ruby-gtk2 returns Array, it may be operated on, yet does not effect the list.
     # we'll do the same ...
     alias :get_children_ :get_children
@@ -27,3 +30,38 @@ module Gtk
     alias :each_forall :forall
   end
 end
+
+module Gtk
+  load_class :Window
+  class Window
+    k
+    add_constructor Symbol do |type|
+      new__ type
+    end
+    
+    add_constructor Integer do |type|
+      new__ type
+    end
+    
+    add_constructor String do |title|
+      w=new__(0)
+      w.set_title(title)
+      w
+    end
+  end
+  
+  load_class :Button
+  class Button
+    k
+    add_constructor do
+      new__
+    end
+    
+    add_constructor String do |label|
+      b = new__
+      b.set_label label
+      b
+    end
+  end
+end
+p Gtk::Button.constructors
