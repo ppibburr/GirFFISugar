@@ -1,15 +1,16 @@
 require File.join(File.dirname(__FILE__),"ffi.rb")
 
-
-
 module Gtk
+  setup_method "init"
+  class << self
+    alias :init_ :init
+  end  
+  def self.init a=[File.basename($0)]
+    init_ a
+  end
   load_class :Container
   class Gtk::Container
-    setup_methods! if !ARGV[0] # retains our overides
-    if ARGV[0]
-     _setup_instance_method("get_children")
-     _setup_instance_method("foreach")
-    end
+    setup_methods! 
     # ruby-gtk2 returns Array, it may be operated on, yet does not effect the list.
     # we'll do the same ...
     alias :get_children_ :get_children
@@ -192,3 +193,24 @@ module Gtk
     end
   end
 end
+
+# TODO: figure out why this wont work if done at head of file
+module Gtk
+  IconSize_ = const_get(:IconSize)
+  const_set(:IconSize,Class.new).class_eval do
+    class << self
+      def [] k
+	IconSize_[k]
+      end
+    end
+    def self.const_missing c
+      self[c.downcase]
+    end
+  end
+  
+  class Stock
+    def self.const_missing c
+      Gtk.const_get(:"STOCK_#{c}")
+    end
+  end
+end 

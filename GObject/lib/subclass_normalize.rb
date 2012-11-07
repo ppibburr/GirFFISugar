@@ -117,7 +117,7 @@ module GObject
     end
     
     def self.setup_methods!
-      setup_methods(gir_methods(self)) if !ARGV[0]
+      setup_methods(gir_methods(self)) # if !ARGV[0]
     end
     setup_methods! 
   end
