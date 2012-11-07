@@ -32,7 +32,17 @@ module ConstructorOveride
       
       def self.use_constructor_overides
 	_setup_method :new.to_s
-        
+
+	def self.print_constructs
+	  possibles = @constructors.map do |c| c[0] end
+	  buff = ["possible constructors are:\n"]
+	  
+	  possibles.each do |pc|
+	    buff << "#{self}.new(#{pc.join(", ")})"
+	  end
+	  buff.join("\n")	  
+	end	
+	
 	class << self
           alias :new__ :new
         end
@@ -45,7 +55,6 @@ module ConstructorOveride
 	  c = ca.find do |cs|
 	    a = []
 	    cs[0].each_with_index do |q,i|
-	      p o[i],q
 	      a << o[i].is_a?(q)
 	    end
 	    !a.index(false)
@@ -54,14 +63,7 @@ module ConstructorOveride
 	  if c
 	    instance_exec(*o,&c[1])
 	  else
-	    possibles = @constructors.map do |c| c[0] end
-	    buff = ["possible constructors are:\n"]
-	    
-	    possibles.each do |pc|
-	      buff << "#{self}.new(#{pc.join(", ")})"
-	    end
-	    
-	    raise "no constructor for signature found\n#{buff.join("\n")}"
+	    raise "no constructor for signature found\n#{print_constructs}"
 	  end
 	end
       end

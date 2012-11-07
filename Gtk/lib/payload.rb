@@ -50,36 +50,45 @@ module Gtk
       w
     end
   end
-  
-  load_class :Button
-  class Button
-    use_constructor_overides()
-    
-    add_constructor do
-      new__
-    end
-    
-    add_constructor String do |label|
-      b = new__
-      b.set_label label
-      b
+
+  [:Button,:Label,:MenuItem,:Frame].each do |d|
+    load_class d
+    const_get(d).class_eval do
+      use_constructor_overides()
+      
+      add_constructor do
+	if d==:Frame or d == :Label
+	  new__(nil)
+	else
+	  new__
+	end
+      end
+      
+      if d == :Label or d == :Frame
+	add_constructor NilClass do |null|
+	  new__(null)
+	end
+      end
+      
+      add_constructor String,TrueClass do |label,bool|
+	new_with_mnemonic(label)
+      end if d != :Frame
+      
+      if d == :Label
+	def self.new_with_label text
+	  l = new__(text)
+	end
+      end
+      
+      add_constructor String do |label|
+	if d == :Frame
+	  new__(label)
+	else
+	  new_with_label(label)
+	end
+      end
     end
   end
-  
-  load_class :Label
-  class Label
-    use_constructor_overides()
-    
-    add_constructor do
-      new__
-    end
-    
-    add_constructor String do |label|
-      b = new__
-      b.set_label label
-      b
-    end
-  end  
   
   [:HBox,:VBox].each do |box|
     load_class box
@@ -99,5 +108,87 @@ module Gtk
       end    
     end
   end
+  
+  load_class :Image
+  class Image
+    use_constructor_overides
+    
+    add_constructor String do |file|
+      new_from_file(file)
+    end
+    
+    add_constructor Gdk::Pixmap do |pixmap|
+      new_from_pixmap(pixmap)
+    end
+    
+    add_constructor do
+      new__
+    end
+    
+    add_constructor String,Integer do |stock_id,size|
+      new_from_stock(stock_id,size)
+    end
+    
+    add_constructor String,Symbol do |stock_id,size|
+      new_from_stock(stock_id,size)
+    end
+  end  
+  
+  load_class :TextView
+  class TextView
+    use_constructor_overides
+      
+    add_constructor Gtk::TextBuffer do |buffer|
+      new_with_buffer buffer
+    end
+      
+    add_constructor do
+      new__
+    end
+  end
+    
+  load_class :Entry
+  class Entry
+    use_constructor_overides
+      
+    add_constructor do
+      new__
+    end
+      
+    add_constructor String do |text|
+      e = new__
+      e.set_text text
+      e
+    end
+  end
+  
+  load_class :Notebook
+  class Notebook
+    setup_methods!
+    [:append_page,:prepend_page].each do |m|
+      define_method m do |pg,l=nil|
+	if l.is_a?(String) or l.is_a?(Symbol)
+	  l = Gtk::Label.new(l)
+	end
+        Gtk::Lib.send("gtk_notebook_#{m}",self,pg,l)
+      end
+    end
+  end
+  
+  load_class :ScrolledWindow
+  class ScrolledWindow
+    use_constructor_overides
+    
+    add_constructor do
+      new__(nil,nil)
+    end
+    
+    add_constructor NilClass,NilClass do |a,b|
+      new__(a,b)
+    end
+    
+    add_constructor Gtk::Adjustment,Gtk::Adjustment do |a,b|
+      new__(a,b)
+    end
+  end
 end
-p Gtk::VBox.constructors

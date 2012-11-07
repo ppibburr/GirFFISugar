@@ -61,6 +61,7 @@ module GObject
     def self.inherited cls
       result = super
       cls.setup_methods!
+      p sn= cls.gir_info.safe_name
       return result unless GObject::Object.enable_auto_subclass_normalize
       sn= cls.gir_info.safe_name
       ns= cls.gir_info.namespace
@@ -114,7 +115,7 @@ module GObject
     end
     
     def self.setup_methods!
-      setup_methods(gir_methods(self))
+      setup_methods(gir_methods(self)) if !ARGV[0]
     end
     setup_methods! 
   end

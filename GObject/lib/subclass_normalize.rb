@@ -60,8 +60,11 @@ module GObject
     # if enabled, removes the explicit need to call subclass! in a class definition
     def self.inherited cls
       result = super
+      
       cls.setup_methods!
+      
       return result unless GObject::Object.enable_auto_subclass_normalize
+      
       sn= cls.gir_info.safe_name
       ns= cls.gir_info.namespace
       
