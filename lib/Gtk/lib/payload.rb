@@ -16,8 +16,8 @@ module Gtk
     alias :get_children_ :get_children
     def get_children
       get_children_().map do |child|
-	# get the GObject of gpointer, child
-	GObject::Object.wrap(FFI::Pointer.new(child))
+	  # get the GObject of gpointer, child
+	  GObject::Object.wrap(FFI::Pointer.new(child))
       end
     end
     

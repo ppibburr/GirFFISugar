@@ -100,7 +100,8 @@ x,y = a[0],a[1]
 a[0] = y
 a[1] = x
 raise "Should not operate on the list via the Array!" if v.get_children[0] == y
-#ww.show_all
-#ww.signal_connect "delete-event" do Gtk.main_quit end
-#Gtk.main
+p ww.get_icon_name
+ww.show_all
+ww.signal_connect "delete-event" do Gtk.main_quit end
+Gtk.main
 
