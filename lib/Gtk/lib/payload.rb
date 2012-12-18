@@ -118,8 +118,11 @@ module Gtk
       new_from_file(file)
     end
     
+    begin
     add_constructor Gdk::Pixmap do |pixmap|
       new_from_pixmap(pixmap)
+    end
+    rescue
     end
     
     add_constructor do
